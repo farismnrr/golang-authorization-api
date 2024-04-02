@@ -5,3 +5,7 @@ type Copyright struct {
 	Username               string `json:"username"`
 	CopyrightAuthorization string `json:"copyrightAuthorization"`
 }
+
+type AuthorizationData struct {
+	PrivateKey string `json:"private_key"`
+}
