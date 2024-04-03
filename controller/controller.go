@@ -2,8 +2,8 @@ package controller
 
 import (
 	"net/http"
-	"os"
 
+	"github.com/farismnrr/golang-authorization-api/helper"
 	"github.com/farismnrr/golang-authorization-api/model"
 	"github.com/gin-gonic/gin"
 )
@@ -27,11 +27,14 @@ func (c *CopyrightController) CreateCopyright(ctx *gin.Context) {
 
 // GetCopyright digunakan untuk menangani permintaan GET /copyright
 func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
-	copyright := model.Copyright{
-		Username:               os.Getenv("USER_AUTH"),
-		CopyrightAuthorization: os.Getenv("AUTHORIZATION"),
+	copyrights, err := helper.AuthorizationData()
+
+	if err != nil {
+		// Handle error, misalnya dengan mengembalikan response error
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get copyrights"})
+		return
 	}
 
 	// Mengembalikan data dalam format JSON
-	ctx.JSON(http.StatusOK, gin.H{"data": copyright})
+	ctx.JSON(http.StatusOK, gin.H{"data": copyrights})
 }
