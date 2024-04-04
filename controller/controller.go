@@ -22,6 +22,7 @@ func (c *CopyrightController) GetServer(ctx *gin.Context) {
 
 // GetCopyright digunakan untuk menangani permintaan GET /copyright
 func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
+	helper.AddDummyAuthorizationData()
 	copyrightUsers, err := helper.AuthorizationData()
 
 	if err != nil {

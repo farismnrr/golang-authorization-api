@@ -10,10 +10,27 @@ import (
 )
 
 var copyrightUsers []model.Copyright
+var isDummyDataAdded bool
 
 // GetAllCopyrights mengembalikan semua data yang ada pada model Copyright
 func AuthorizationData() ([]model.Copyright, error) {
 	return copyrightUsers, nil
+}
+
+func AddDummyAuthorizationData() {
+	// Jika data dummy sudah ditambahkan sebelumnya, maka tidak perlu ditambahkan lagi
+	if isDummyDataAdded {
+		return
+	}
+
+	// Tambahkan data dummy hanya jika belum ditambahkan sebelumnya
+	dummyData := []model.Copyright{
+		{Id: uuid.New().String(), Username: "farismnrr", CopyrightAuthorization: "b8e457e85d402a1952046ffd0b4a34eb"},
+		// Tambahkan data lain sesuai kebutuhan
+	}
+	copyrightUsers = append(copyrightUsers, dummyData...)
+
+	isDummyDataAdded = true
 }
 
 func AddAuthorizationData(username string) ([]model.Copyright, error) {
