@@ -14,6 +14,10 @@ func SetupRoutes(router *gin.Engine, controller *controller.CopyrightController)
 	router.Use(authMiddleware)
 
 	{
+		router.GET("/", controller.GetServer)
 		router.GET("/copyright", controller.GetCopyright)
+		router.POST("/copyright", controller.AddCopyright)
+		router.PUT("/copyright", controller.UpdateCopyright)
+		router.DELETE("/copyright", controller.RemoveCopyright)
 	}
 }

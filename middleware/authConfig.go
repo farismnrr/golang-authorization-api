@@ -36,7 +36,7 @@ func AuthorizationMiddleware(token string) gin.HandlerFunc {
 			// Jika tidak ada token atau token tidak valid, kirim respons Unauthorized
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status":  http.StatusUnauthorized,
-				"message": "Unauthorized",
+				"message": http.StatusText(http.StatusUnauthorized),
 			})
 			c.Abort()
 			return
