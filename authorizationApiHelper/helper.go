@@ -10,8 +10,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"test/authorizationApiModel"
 	"time"
+
+	"github.com/farismnrr/golang-authorization-api/authorizationApiModel"
 )
 
 func ClearScreen() {

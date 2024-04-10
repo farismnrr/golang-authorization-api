@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"test/authorizationApiHelper"
-	"test/authorizationApiModel"
+
+	"github.com/farismnrr/golang-authorization-api/authorizationApiHelper"
+	"github.com/farismnrr/golang-authorization-api/authorizationApiModel"
 )
 
 func GetDataFromAPI() (*authorizationApiModel.ResponseData, error) {
