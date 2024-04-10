@@ -1,4 +1,4 @@
-package authorizationApiHelper
+package helper
 
 import (
 	"crypto/md5"
@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/farismnrr/golang-authorization-api/authorizationApiModel"
+	"github.com/farismnrr/go-auth-api-consume/model"
 )
 
 func ClearScreen() {
@@ -52,7 +52,7 @@ func ReadJsonFile() (string, string) {
 		log.Fatal("Please insert the authorization file!")
 	}
 
-	var auth authorizationApiModel.AuthorizationData
+	var auth model.AuthorizationData
 	json.Unmarshal(authData, &auth)
 
 	return auth.Username, auth.PrivateKey

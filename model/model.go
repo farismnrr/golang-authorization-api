@@ -1,4 +1,4 @@
-package authorizationApiModel
+package model
 
 type ResponseData struct {
 	Status  int        `json:"status"`

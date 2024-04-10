@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/farismnrr/golang-authorization-api/authorizationApiHelper"
-	"github.com/farismnrr/golang-authorization-api/authorizationApiModel"
+	"github.com/farismnrr/go-auth-api-consume/helper"
+	"github.com/farismnrr/go-auth-api-consume/model"
 )
 
-func GetDataFromAPI() (*authorizationApiModel.ResponseData, error) {
-	_, authToken := authorizationApiHelper.ReadJsonFile()
+func GetDataFromAPI() (*model.ResponseData, error) {
+	_, authToken := helper.ReadJsonFile()
 
 	req, err := http.NewRequest("GET", "https://authorization-api-dot-farismnrr-gclouds.as.r.appspot.com/copyright", nil)
 	if err != nil {
@@ -26,7 +26,7 @@ func GetDataFromAPI() (*authorizationApiModel.ResponseData, error) {
 	}
 	defer resp.Body.Close()
 
-	var response authorizationApiModel.ResponseData
+	var response model.ResponseData
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode response body: %v", err)
@@ -43,9 +43,9 @@ func CopyrightHandler() bool {
 		return false
 	}
 
-	username, _ := authorizationApiHelper.ReadJsonFile()
+	username, _ := helper.ReadJsonFile()
 
-	hashed := authorizationApiHelper.GenerateHash(username)
+	hashed := helper.GenerateHash(username)
 
 	for _, userData := range response.Data {
 		if hashed == userData.CopyrightAuthorization {
