@@ -1,3 +1,3 @@
-module github.com/farismnrr/go-auth-api-consume
+module github.com/farismnrr/golang-authorization-api
 
 go 1.22.1

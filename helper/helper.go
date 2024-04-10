@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/farismnrr/go-auth-api-consume/model"
+	"github.com/farismnrr/golang-authorization-api/model"
 )
 
 func GenerateHash(text string) string {

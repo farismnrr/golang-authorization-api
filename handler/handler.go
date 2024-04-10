@@ -1,18 +1,18 @@
-package authorizationApiController
+package handler
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	"github.com/farismnrr/go-auth-api-consume/helper"
-	"github.com/farismnrr/go-auth-api-consume/model"
+	"github.com/farismnrr/golang-authorization-api/helper"
+	"github.com/farismnrr/golang-authorization-api/model"
 )
 
 func GetDataFromAPI() (*model.ResponseData, error) {
 	_, authToken := helper.ReadJsonFile()
 
-	req, err := http.NewRequest("GET", "https://authorization-api-dot-farismnrr-gclouds.as.r.appspot.com/copyright", nil)
+	req, err := http.NewRequest("GET", "tinyurl.com/farismnrr-copyright", nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %v", err)
 	}
