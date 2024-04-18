@@ -17,7 +17,7 @@ func (c *CopyrightController) GetServer(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
+			Status:  http.StatusForbidden,
 			Message: "Authorization header is missing",
 		}
 		ctx.JSON(http.StatusBadRequest, responseData)
@@ -48,7 +48,7 @@ func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
+			Status:  http.StatusForbidden,
 			Message: "Authorization header is missing",
 		}
 		ctx.JSON(http.StatusBadRequest, responseData)
@@ -105,7 +105,7 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
+			Status:  http.StatusForbidden,
 			Message: "Authorization header is missing",
 		}
 		ctx.JSON(http.StatusBadRequest, responseData)
@@ -195,7 +195,7 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
+			Status:  http.StatusForbidden,
 			Message: "Authorization header is missing",
 		}
 		ctx.JSON(http.StatusBadRequest, responseData)
@@ -281,7 +281,7 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
+			Status:  http.StatusForbidden,
 			Message: "Authorization header is missing",
 		}
 		ctx.JSON(http.StatusBadRequest, responseData)
