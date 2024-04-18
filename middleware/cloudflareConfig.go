@@ -1,0 +1,86 @@
+package middleware
+
+import (
+	"encoding/json"
+	"net/http"
+
+	"github.com/farismnrr/golang-authorization-api/model"
+	"github.com/gin-gonic/gin"
+)
+
+func GetCloudflare(ctx *gin.Context) (*model.CloudflareErrorResponse, *model.CloudflareResponse) {
+	authToken := AuthorizationConfig()
+
+	req, err := http.NewRequest("GET", "https://api.cloudflare.com/client/v4/user/tokens/verify", nil)
+	if err != nil {
+		errorResponse := &model.CloudflareErrorResponse{
+			Success: false,
+			Errors: []struct {
+				Code    int    `json:"code"`
+				Message string `json:"message"`
+			}{
+				{
+					Code:    1001,
+					Message: "Failed to create request: " + err.Error(),
+				},
+			},
+			Messages: []interface{}{},
+			Result:   nil,
+		}
+		return errorResponse, nil
+	}
+
+	req.Header.Set("Authorization", "Bearer "+authToken.PrivateKey)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		errorResponse := &model.CloudflareErrorResponse{
+			Success: false,
+			Errors: []struct {
+				Code    int    `json:"code"`
+				Message string `json:"message"`
+			}{
+				{
+					Code:    1002,
+					Message: "Failed to send request: " + err.Error(),
+				},
+			},
+			Messages: []interface{}{},
+			Result:   nil,
+		}
+		return errorResponse, nil
+	}
+	defer resp.Body.Close()
+
+	var responseData model.CloudflareResponse
+	err = json.NewDecoder(resp.Body).Decode(&responseData)
+	if err != nil {
+		errorResponse := &model.CloudflareErrorResponse{
+			Success: false,
+			Errors: []struct {
+				Code    int    `json:"code"`
+				Message string `json:"message"`
+			}{
+				{
+					Code:    1003,
+					Message: "Failed to decode response body: " + err.Error(),
+				},
+			},
+			Messages: []interface{}{},
+			Result:   nil,
+		}
+		return errorResponse, nil
+	}
+
+	return nil, &responseData
+}
+
+func ParseCloudflareResponse(jsonData []byte) (bool, error) {
+	var response model.CloudflareResponse
+	err := json.Unmarshal(jsonData, &response)
+	if err != nil {
+		return false, err
+	}
+	return response.Success, nil
+}

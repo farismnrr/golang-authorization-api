@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/farismnrr/golang-authorization-api/helper"
+	"github.com/farismnrr/golang-authorization-api/middleware"
 	"github.com/farismnrr/golang-authorization-api/model"
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +14,28 @@ type CopyrightController struct{}
 
 // Fungsi ini akan menangani permintaan GET ke endpoint "/"
 func (c *CopyrightController) GetServer(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Authorization header is missing",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	responseStatus := model.ResponseStatus{
 		Status:  http.StatusOK,
 		Message: "Server is running",
@@ -22,6 +45,28 @@ func (c *CopyrightController) GetServer(ctx *gin.Context) {
 
 // GetCopyright digunakan untuk menangani permintaan GET /copyright
 func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Authorization header is missing",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	helper.AddDummyAuthorizationData()
 	copyrightUsers, err := helper.AuthorizationData()
 
@@ -57,6 +102,28 @@ func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
 }
 
 func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Authorization header is missing",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	// Membaca body request
 	var requestData map[string]string
 
@@ -125,6 +192,28 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 }
 
 func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Authorization header is missing",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	// Membaca body request
 	var requestData map[string]string
 
@@ -188,8 +277,29 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responseData)
 }
 
-// controller.go
 func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Authorization header is missing",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	// Membaca body request
 	var requestData map[string]string
 
@@ -264,4 +374,30 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		}
 	}
 	ctx.JSON(http.StatusOK, responseData)
+}
+
+func (c *CopyrightController) ShowCloudflareResponse(ctx *gin.Context) {
+	token, err := middleware.GenerateJWTToken()
+
+	if err != nil {
+		// Handle error jika gagal mengupdate data
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Error generating JWT token: " + err.Error(),
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	// Handle error jika gagal mengupdate data
+	responseData := model.ResponseStatus{
+		Status:  http.StatusAccepted,
+		Message: "Token JWT Generated Succesfully",
+		Data: []model.Copyright{
+			{
+				CopyrightAuthorization: token,
+			},
+		},
+	}
+	ctx.JSON(http.StatusAccepted, responseData)
 }

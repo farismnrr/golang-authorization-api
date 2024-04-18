@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 
+	"github.com/farismnrr/golang-authorization-api/middleware"
 	"github.com/farismnrr/golang-authorization-api/model"
 	"github.com/google/uuid"
 )
@@ -119,4 +120,13 @@ func IsUsernameExists(username string) bool {
 		}
 	}
 	return false
+}
+
+func ShowSuccessFromCloudflareResponse(jsonData []byte) bool {
+	success, err := middleware.ParseCloudflareResponse(jsonData)
+	if err != nil {
+		return false
+	}
+
+	return success
 }

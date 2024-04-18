@@ -37,6 +37,7 @@ func AuthorizationMiddleware(token string) gin.HandlerFunc {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status":  http.StatusUnauthorized,
 				"message": http.StatusText(http.StatusUnauthorized),
+				"token":   token,
 			})
 			c.Abort()
 			return
