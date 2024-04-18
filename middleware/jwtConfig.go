@@ -20,7 +20,7 @@ func GenerateJWTToken() (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["authorized"] = true
-	claims["exp"] = time.Now().Add(10 * time.Minute).Unix()
+	claims["exp"] = time.Now().Add(10 * time.Second).Unix()
 	claims["nonce"] = fmt.Sprintf("%d", time.Now().UnixNano()) // Use current timestamp as nonce
 
 	tokenString, err := token.SignedString(jwtKey)
