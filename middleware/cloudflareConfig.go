@@ -2,16 +2,27 @@ package middleware
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/farismnrr/golang-authorization-api/model"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func GetCloudflare(ctx *gin.Context) (*model.CloudflareErrorResponse, *model.CloudflareResponse) {
 	authToken := AuthorizationConfig()
 
-	req, err := http.NewRequest("GET", "https://api.cloudflare.com/client/v4/user/tokens/verify", nil)
+	// Load environment variables
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
+	cloudflareApi := os.Getenv("CLOUDFLARE_API_URL")
+
+	req, err := http.NewRequest("GET", cloudflareApi, nil)
 	if err != nil {
 		errorResponse := &model.CloudflareErrorResponse{
 			Success: false,
