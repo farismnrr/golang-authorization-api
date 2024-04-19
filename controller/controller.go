@@ -1,18 +1,51 @@
+/*
+Package controller provides handlers for various API endpoints related to authorization.
+
+Handlers:
+- GetServer: Retrieves server status.
+- GetCopyright: Retrieves copyright data.
+- AddCopyright: Adds copyright data.
+- RemoveCopyright: Removes copyright data.
+- UpdateCopyright: Updates copyright data.
+- ShowCloudflareResponse: Generates JWT token for Cloudflare authorization.
+*/
+
 package controller
 
 import (
 	"net/http"
 
 	"github.com/farismnrr/golang-authorization-api/helper"
+	"github.com/farismnrr/golang-authorization-api/middleware"
 	"github.com/farismnrr/golang-authorization-api/model"
 	"github.com/gin-gonic/gin"
 )
 
-// CopyrightController adalah struktur controller untuk mengelola operasi copyright
 type CopyrightController struct{}
 
-// Fungsi ini akan menangani permintaan GET ke endpoint "/"
 func (c *CopyrightController) GetServer(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusForbidden,
+			Message: "JWT Token is missing",
+		}
+		ctx.JSON(http.StatusForbidden, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	responseStatus := model.ResponseStatus{
 		Status:  http.StatusOK,
 		Message: "Server is running",
@@ -20,8 +53,29 @@ func (c *CopyrightController) GetServer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responseStatus)
 }
 
-// GetCopyright digunakan untuk menangani permintaan GET /copyright
 func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusForbidden,
+			Message: "JWT Token is missing",
+		}
+		ctx.JSON(http.StatusForbidden, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	helper.AddDummyAuthorizationData()
 	copyrightUsers, err := helper.AuthorizationData()
 
@@ -57,75 +111,28 @@ func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
 }
 
 func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
-	// Membaca body request
-	var requestData map[string]string
-
-	if err := ctx.BindJSON(&requestData); err != nil {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
-			Message: "Failed to read request body",
+			Status:  http.StatusForbidden,
+			Message: "JWT Token is missing",
 		}
-
-		ctx.JSON(http.StatusBadRequest, responseData)
+		ctx.JSON(http.StatusForbidden, responseData)
 		return
 	}
 
-	username, ok := requestData["username"]
-	if !ok || username == "" {
-		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
-			Message: "Username is required",
-		}
+	tokenString = tokenString[7:]
 
-		ctx.JSON(http.StatusBadRequest, responseData)
-		return
-	}
-
-	// Memastikan hanya key "username" yang diperbolehkan
-	for key := range requestData {
-		if key != "username" {
-			responseData := model.ResponseStatus{
-				Status:  http.StatusBadRequest,
-				Message: "Key " + key + " is not allowed",
-			}
-			ctx.JSON(http.StatusBadRequest, responseData)
-			return // Pindahkan return ke sini agar bisa menangani semua key
-		}
-	}
-
-	// Mengecek apakah username sudah ada
-	if helper.IsUsernameExists(username) {
-		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
-			Message: "Username already exists",
-		}
-		ctx.JSON(http.StatusBadRequest, responseData)
-		return
-	}
-
-	newData, err := helper.AddAuthorizationData(username)
+	_, err := middleware.ValidateJWTToken(tokenString)
 	if err != nil {
-		// Handle error jika gagal menambahkan data
 		responseData := model.ResponseStatus{
-			Status:  http.StatusBadRequest,
-			Message: "Failed to add new data",
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
 		}
-		ctx.JSON(http.StatusBadRequest, responseData)
+		ctx.JSON(http.StatusUnauthorized, responseData)
 		return
 	}
 
-	// Handle data (misalnya simpan ke database, dll.)
-	// Kemudian bisa mengembalikan response, misalnya:
-	responseData := model.ResponseStatus{
-		Status:  http.StatusOK,
-		Message: http.StatusText(http.StatusOK),
-		Data:    newData,
-	}
-	ctx.JSON(http.StatusOK, responseData)
-}
-
-func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
-	// Membaca body request
 	var requestData map[string]string
 
 	if err := ctx.BindJSON(&requestData); err != nil {
@@ -133,6 +140,7 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 			Status:  http.StatusBadRequest,
 			Message: "Failed to read request body",
 		}
+
 		ctx.JSON(http.StatusBadRequest, responseData)
 		return
 	}
@@ -143,11 +151,11 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 			Status:  http.StatusBadRequest,
 			Message: "Username is required",
 		}
+
 		ctx.JSON(http.StatusBadRequest, responseData)
 		return
 	}
 
-	// Memastikan hanya key "username" yang diperbolehkan
 	for key := range requestData {
 		if key != "username" {
 			responseData := model.ResponseStatus{
@@ -159,7 +167,88 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 		}
 	}
 
-	// Mengecek apakah username ada dalam data
+	if helper.IsUsernameExists(username) {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Username already exists",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	newData, err := helper.AddAuthorizationData(username)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Failed to add new data",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	responseData := model.ResponseStatus{
+		Status:  http.StatusOK,
+		Message: http.StatusText(http.StatusOK),
+		Data:    newData,
+	}
+	ctx.JSON(http.StatusOK, responseData)
+}
+
+func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusForbidden,
+			Message: "JWT Token is missing",
+		}
+		ctx.JSON(http.StatusForbidden, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
+	var requestData map[string]string
+
+	if err := ctx.BindJSON(&requestData); err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Failed to read request body",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	username, ok := requestData["username"]
+	if !ok || username == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Username is required",
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	for key := range requestData {
+		if key != "username" {
+			responseData := model.ResponseStatus{
+				Status:  http.StatusBadRequest,
+				Message: "Key " + key + " is not allowed",
+			}
+			ctx.JSON(http.StatusBadRequest, responseData)
+			return
+		}
+	}
+
 	if !helper.IsUsernameExists(username) {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusNotFound,
@@ -169,7 +258,6 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Menghapus data berdasarkan username
 	deletedData, err := helper.RemoveAuthorizationData(username)
 	if err != nil {
 		responseData := model.ResponseStatus{
@@ -188,9 +276,29 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responseData)
 }
 
-// controller.go
 func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
-	// Membaca body request
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusForbidden,
+			Message: "JWT Token is missing",
+		}
+		ctx.JSON(http.StatusForbidden, responseData)
+		return
+	}
+
+	tokenString = tokenString[7:]
+
+	_, err := middleware.ValidateJWTToken(tokenString)
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusUnauthorized,
+			Message: "Invalid token",
+		}
+		ctx.JSON(http.StatusUnauthorized, responseData)
+		return
+	}
+
 	var requestData map[string]string
 
 	if err := ctx.BindJSON(&requestData); err != nil {
@@ -212,7 +320,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Memastikan hanya key "username" yang diperbolehkan
 	for key := range requestData {
 		if (key != "username") && (key != "newUsername") {
 			responseData := model.ResponseStatus{
@@ -224,7 +331,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		}
 	}
 
-	// Mengecek apakah username ada dalam data
 	if !helper.IsUsernameExists(username) {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusNotFound,
@@ -234,10 +340,8 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Mengupdate data
 	allData, err := helper.UpdateAuthorizationData(requestData)
 	if err != nil {
-		// Handle error jika gagal mengupdate data
 		responseData := model.ResponseStatus{
 			Status:  http.StatusBadRequest,
 			Message: "Failed to update data: " + err.Error(),
@@ -246,8 +350,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Handle data (misalnya simpan ke database, dll.)
-	// Kemudian bisa mengembalikan response, misalnya:
 	var responseData model.ResponseStatus
 	if len(allData) > 0 {
 		responseData = model.ResponseStatus{
@@ -264,4 +366,28 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		}
 	}
 	ctx.JSON(http.StatusOK, responseData)
+}
+
+func (c *CopyrightController) ShowCloudflareResponse(ctx *gin.Context) {
+	token, err := middleware.GenerateJWTToken()
+
+	if err != nil {
+		responseData := model.ResponseStatus{
+			Status:  http.StatusBadRequest,
+			Message: "Error generating JWT token: " + err.Error(),
+		}
+		ctx.JSON(http.StatusBadRequest, responseData)
+		return
+	}
+
+	responseData := model.ResponseStatus{
+		Status:  http.StatusAccepted,
+		Message: "Access granted: AccessToken JWT generated successfully",
+		Data: []model.Copyright{
+			{
+				CopyrightAuthorization: token,
+			},
+		},
+	}
+	ctx.JSON(http.StatusAccepted, responseData)
 }

@@ -1,3 +1,16 @@
+/*
+SetupRoutes function sets up the routes for the application.
+It takes a Gin router and a CopyrightController instance as parameters.
+
+Routes:
+- GET /get-key: Retrieves the private key for authorization using middleware.
+- GET /: Returns server information.
+- GET /copyright: Retrieves copyright.
+- POST /copyright: Adds new copyright.
+- PUT /copyright: Updates existing copyright.
+- DELETE /copyright: Removes copyright.
+*/
+
 package routes
 
 import (
@@ -6,14 +19,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// SetupRoutes mengatur semua rute aplikasi
 func SetupRoutes(router *gin.Engine, controller *controller.CopyrightController) {
-	authMiddleware := middleware.AuthorizationMiddleware(middleware.AuthorizationConfig().PrivateKey)
-
-	// Group untuk rute yang memerlukan otorisasi
-	router.Use(authMiddleware)
-
 	{
+		router.GET("/get-key", middleware.AuthorizationMiddleware((middleware.AuthorizationConfig().PrivateKey)), controller.ShowCloudflareResponse)
+
 		router.GET("/", controller.GetServer)
 		router.GET("/copyright", controller.GetCopyright)
 		router.POST("/copyright", controller.AddCopyright)
