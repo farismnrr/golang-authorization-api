@@ -1,3 +1,11 @@
+/*
+Package middleware provides middleware functions for handling HTTP requests and responses related to Cloudflare API.
+
+Functions:
+- GetCloudflare: Sends a GET request to Cloudflare API to retrieve data.
+- ParseCloudflareResponse: Parses the response from Cloudflare API.
+*/
+
 package middleware
 
 import (
@@ -14,7 +22,6 @@ import (
 func GetCloudflare(ctx *gin.Context) (*model.CloudflareErrorResponse, *model.CloudflareResponse) {
 	authToken := AuthorizationConfig()
 
-	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)

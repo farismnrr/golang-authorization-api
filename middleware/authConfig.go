@@ -1,3 +1,11 @@
+/*
+Package middleware provides middleware functions for handling authorization-related tasks.
+
+Functions:
+- AuthorizationConfig: Loads the authorization configuration from the Authorization.json file.
+- AuthorizationMiddleware: Middleware function to validate the authorization token.
+*/
+
 package middleware
 
 import (
@@ -10,28 +18,24 @@ import (
 )
 
 func AuthorizationConfig() model.AuthorizationKey {
-	// Inisialisasi middleware untuk otorisasi
 	authData, err := ioutil.ReadFile("Authorization.json")
 	if err != nil {
-		panic(err) // Gagal membaca file, hentikan program
+		panic(err)
 	}
 
 	var auth model.AuthorizationKey
 	err = json.Unmarshal(authData, &auth)
 	if err != nil {
-		panic(err) // Gagal parse JSON, hentikan program
+		panic(err)
 	}
 
 	return auth
 }
 
-// AuthorizationMiddleware memeriksa keberadaan dan kevalidan token dalam header Authorization
 func AuthorizationMiddleware(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Ambil token dari header Authorization
 		bearerToken := c.GetHeader("Authorization")
 
-		// Periksa apakah token diberikan
 		if bearerToken == "" {
 			responseData := model.ResponseStatus{
 				Status:  http.StatusForbidden,
@@ -42,9 +46,7 @@ func AuthorizationMiddleware(token string) gin.HandlerFunc {
 			return
 		}
 
-		// Periksa apakah token valid
 		if bearerToken != "Bearer "+token {
-			// Jika token tidak valid, kirim respons Unauthorized
 			responseData := model.ResponseStatus{
 				Status:  http.StatusUnauthorized,
 				Message: "Access denied: Invalid private_key! Failed to Generate JWT Token",
@@ -54,7 +56,6 @@ func AuthorizationMiddleware(token string) gin.HandlerFunc {
 			return
 		}
 
-		// Jika token valid, lanjutkan ke handler berikutnya
 		c.Next()
 	}
 }

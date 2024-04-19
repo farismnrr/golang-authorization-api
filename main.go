@@ -1,3 +1,12 @@
+/*
+Main function initializes the application:
+- Loads environment variables from .env file.
+- Initializes a new Gin router.
+- Sets up routes for the application.
+- Retrieves the port from environment variables or defaults to 8080.
+- Runs the server on the specified port.
+*/
+
 package main
 
 import (
@@ -11,25 +20,20 @@ import (
 )
 
 func main() {
-	// Load environment variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	// Inisialisasi router
 	router := gin.Default()
 
-	// Inisialisasi controller
 	controller := &controller.CopyrightController{}
 
-	// Setup routes
 	routes.SetupRoutes(router, controller)
 
-	// Mulai server
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Default port
+		port = "8080"
 	}
 	router.Run(":" + port)
 }

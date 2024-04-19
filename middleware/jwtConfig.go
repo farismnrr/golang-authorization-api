@@ -1,3 +1,13 @@
+/*
+Package middleware provides middleware functions for handling JWT tokens and other authorization-related tasks.
+
+Functions:
+- GenerateJWTToken: Generates a JWT token with a short expiration time of 10 seconds.
+- ValidateJWTToken: Validates the JWT token.
+- IsNonceUsed: Checks if the nonce has been used before.
+- AddUsedNonce: Adds the nonce to the used nonces list.
+*/
+
 package middleware
 
 import (
@@ -11,17 +21,16 @@ import (
 
 var (
 	jwtKey       = []byte(AuthorizationConfig().PrivateKey)
-	usedNonces   = make(map[string]bool) // Map to store used nonces
-	usedNoncesMu sync.Mutex              // Mutex for concurrent access to usedNonces
+	usedNonces   = make(map[string]bool)
+	usedNoncesMu sync.Mutex
 )
 
-// GenerateJWTToken generates a JWT token with a short expiration time of 10 seconds
 func GenerateJWTToken() (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["authorized"] = true
 	claims["exp"] = time.Now().Add(1 * time.Second).Unix()
-	claims["nonce"] = fmt.Sprintf("%d", time.Now().UnixNano()) // Use current timestamp as nonce
+	claims["nonce"] = fmt.Sprintf("%d", time.Now().UnixNano())
 
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {
@@ -31,7 +40,6 @@ func GenerateJWTToken() (string, error) {
 	return tokenString, nil
 }
 
-// ValidateJWTToken validates the JWT token
 func ValidateJWTToken(tokenString string) (bool, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
@@ -45,31 +53,26 @@ func ValidateJWTToken(tokenString string) (bool, error) {
 		return false, errors.New("invalid token")
 	}
 
-	// Check if nonce exists
 	nonce, ok := claims["nonce"].(string)
 	if !ok {
 		return false, errors.New("nonce not found in token")
 	}
 
-	// Check if nonce has been used before
 	if IsNonceUsed(nonce) {
 		return false, errors.New("nonce has been used before")
 	}
 
-	// Mark nonce as used
 	AddUsedNonce(nonce)
 
 	return true, nil
 }
 
-// IsNonceUsed checks if the nonce has been used before
 func IsNonceUsed(nonce string) bool {
 	usedNoncesMu.Lock()
 	defer usedNoncesMu.Unlock()
 	return usedNonces[nonce]
 }
 
-// AddUsedNonce adds the nonce to the used nonces list
 func AddUsedNonce(nonce string) {
 	usedNoncesMu.Lock()
 	defer usedNoncesMu.Unlock()

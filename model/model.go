@@ -1,6 +1,16 @@
+/*
+Package model provides structures for storing various data related to the application.
+
+Structures:
+- Copyright: Stores data related to copyright.
+- AuthorizationKey: Stores the private key for authorization.
+- ResponseStatus: Stores status and message of the response.
+- CloudflareResponse: Represents the response from Cloudflare API.
+- CloudflareErrorResponse: Represents the error response from Cloudflare API.
+*/
+
 package model
 
-// Copyright adalah struktur untuk menyimpan data copyright
 type Copyright struct {
 	Id                     string `json:"id,omitempty"`
 	Username               string `json:"username,omitempty"`
@@ -11,6 +21,7 @@ type Copyright struct {
 type AuthorizationKey struct {
 	PrivateKey string `json:"private_key"`
 }
+
 type ResponseStatus struct {
 	Status  int         `json:"status"`
 	Message string      `json:"message"`

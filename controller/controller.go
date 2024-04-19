@@ -1,3 +1,15 @@
+/*
+Package controller provides handlers for various API endpoints related to authorization.
+
+Handlers:
+- GetServer: Retrieves server status.
+- GetCopyright: Retrieves copyright data.
+- AddCopyright: Adds copyright data.
+- RemoveCopyright: Removes copyright data.
+- UpdateCopyright: Updates copyright data.
+- ShowCloudflareResponse: Generates JWT token for Cloudflare authorization.
+*/
+
 package controller
 
 import (
@@ -9,10 +21,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CopyrightController adalah struktur controller untuk mengelola operasi copyright
 type CopyrightController struct{}
 
-// Fungsi ini akan menangani permintaan GET ke endpoint "/"
 func (c *CopyrightController) GetServer(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
@@ -43,7 +53,6 @@ func (c *CopyrightController) GetServer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responseStatus)
 }
 
-// GetCopyright digunakan untuk menangani permintaan GET /copyright
 func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
 	tokenString := ctx.GetHeader("Authorization")
 	if tokenString == "" {
@@ -124,7 +133,6 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Membaca body request
 	var requestData map[string]string
 
 	if err := ctx.BindJSON(&requestData); err != nil {
@@ -148,7 +156,6 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Memastikan hanya key "username" yang diperbolehkan
 	for key := range requestData {
 		if key != "username" {
 			responseData := model.ResponseStatus{
@@ -156,11 +163,10 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 				Message: "Key " + key + " is not allowed",
 			}
 			ctx.JSON(http.StatusBadRequest, responseData)
-			return // Pindahkan return ke sini agar bisa menangani semua key
+			return
 		}
 	}
 
-	// Mengecek apakah username sudah ada
 	if helper.IsUsernameExists(username) {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusBadRequest,
@@ -172,7 +178,6 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 
 	newData, err := helper.AddAuthorizationData(username)
 	if err != nil {
-		// Handle error jika gagal menambahkan data
 		responseData := model.ResponseStatus{
 			Status:  http.StatusBadRequest,
 			Message: "Failed to add new data",
@@ -181,8 +186,6 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Handle data (misalnya simpan ke database, dll.)
-	// Kemudian bisa mengembalikan response, misalnya:
 	responseData := model.ResponseStatus{
 		Status:  http.StatusOK,
 		Message: http.StatusText(http.StatusOK),
@@ -214,7 +217,6 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Membaca body request
 	var requestData map[string]string
 
 	if err := ctx.BindJSON(&requestData); err != nil {
@@ -236,7 +238,6 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Memastikan hanya key "username" yang diperbolehkan
 	for key := range requestData {
 		if key != "username" {
 			responseData := model.ResponseStatus{
@@ -248,7 +249,6 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 		}
 	}
 
-	// Mengecek apakah username ada dalam data
 	if !helper.IsUsernameExists(username) {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusNotFound,
@@ -258,7 +258,6 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Menghapus data berdasarkan username
 	deletedData, err := helper.RemoveAuthorizationData(username)
 	if err != nil {
 		responseData := model.ResponseStatus{
@@ -300,7 +299,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Membaca body request
 	var requestData map[string]string
 
 	if err := ctx.BindJSON(&requestData); err != nil {
@@ -322,7 +320,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Memastikan hanya key "username" yang diperbolehkan
 	for key := range requestData {
 		if (key != "username") && (key != "newUsername") {
 			responseData := model.ResponseStatus{
@@ -334,7 +331,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		}
 	}
 
-	// Mengecek apakah username ada dalam data
 	if !helper.IsUsernameExists(username) {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusNotFound,
@@ -344,10 +340,8 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Mengupdate data
 	allData, err := helper.UpdateAuthorizationData(requestData)
 	if err != nil {
-		// Handle error jika gagal mengupdate data
 		responseData := model.ResponseStatus{
 			Status:  http.StatusBadRequest,
 			Message: "Failed to update data: " + err.Error(),
@@ -356,8 +350,6 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 		return
 	}
 
-	// Handle data (misalnya simpan ke database, dll.)
-	// Kemudian bisa mengembalikan response, misalnya:
 	var responseData model.ResponseStatus
 	if len(allData) > 0 {
 		responseData = model.ResponseStatus{
@@ -380,7 +372,6 @@ func (c *CopyrightController) ShowCloudflareResponse(ctx *gin.Context) {
 	token, err := middleware.GenerateJWTToken()
 
 	if err != nil {
-		// Handle error jika gagal mengupdate data
 		responseData := model.ResponseStatus{
 			Status:  http.StatusBadRequest,
 			Message: "Error generating JWT token: " + err.Error(),
@@ -389,7 +380,6 @@ func (c *CopyrightController) ShowCloudflareResponse(ctx *gin.Context) {
 		return
 	}
 
-	// Handle error jika gagal mengupdate data
 	responseData := model.ResponseStatus{
 		Status:  http.StatusAccepted,
 		Message: "Access granted: AccessToken JWT generated successfully",
