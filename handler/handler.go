@@ -3,6 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/farismnrr/golang-authorization-api/helper"
@@ -65,12 +66,11 @@ func GetDataFromAPI() (*model.ResponseData, error) {
 	return &response, nil
 }
 
-func CopyrightHandler() bool {
+func CopyrightHandler() {
 	response, err := GetDataFromAPI()
 	if err != nil {
 		// Handle error
-		fmt.Println("Error:", err)
-		return false
+		log.Fatal("Error:")
 	}
 
 	username, _ := helper.ReadJsonFile()
@@ -79,10 +79,10 @@ func CopyrightHandler() bool {
 
 	for _, userData := range response.Data {
 		if hashed == userData.CopyrightAuthorization {
-			fmt.Println("Copyright Authorized by", userData.Username)
-			return true
+			log.Fatal("Copyright Authorized by", userData.Username)
+		} else {
+			log.Fatal("Unauthorized! Please contact the owner's code")
 		}
 	}
 
-	return false // If user not found or authorization failed
 }
