@@ -51,8 +51,9 @@ func GetDataFromAPI() (*model.ResponseData, error) {
 	}
 
 	if len(responseAPI.Data) > 0 {
-		lastData := responseAPI.Data[len(responseAPI.Data)-1]
-		req.Header.Set("Authorization", "Bearer "+lastData.CopyrightAuthorization)
+		for _, data := range responseAPI.Data {
+			req.Header.Set("Authorization", "Bearer "+data.CopyrightAuthorization)
+		}
 	}
 
 	client := &http.Client{}
