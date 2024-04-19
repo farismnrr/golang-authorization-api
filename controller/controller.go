@@ -18,7 +18,7 @@ func (c *CopyrightController) GetServer(ctx *gin.Context) {
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusForbidden,
-			Message: "Authorization header is missing",
+			Message: "JWT Token is missing",
 		}
 		ctx.JSON(http.StatusForbidden, responseData)
 		return
@@ -49,7 +49,7 @@ func (c *CopyrightController) GetCopyright(ctx *gin.Context) {
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusForbidden,
-			Message: "Authorization header is missing",
+			Message: "JWT Token is missing",
 		}
 		ctx.JSON(http.StatusForbidden, responseData)
 		return
@@ -106,7 +106,7 @@ func (c *CopyrightController) AddCopyright(ctx *gin.Context) {
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusForbidden,
-			Message: "Authorization header is missing",
+			Message: "JWT Token is missing",
 		}
 		ctx.JSON(http.StatusForbidden, responseData)
 		return
@@ -196,7 +196,7 @@ func (c *CopyrightController) RemoveCopyright(ctx *gin.Context) {
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusForbidden,
-			Message: "Authorization header is missing",
+			Message: "JWT Token is missing",
 		}
 		ctx.JSON(http.StatusForbidden, responseData)
 		return
@@ -282,7 +282,7 @@ func (c *CopyrightController) UpdateCopyright(ctx *gin.Context) {
 	if tokenString == "" {
 		responseData := model.ResponseStatus{
 			Status:  http.StatusForbidden,
-			Message: "Authorization header is missing",
+			Message: "JWT Token is missing",
 		}
 		ctx.JSON(http.StatusForbidden, responseData)
 		return
