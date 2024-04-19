@@ -392,7 +392,7 @@ func (c *CopyrightController) ShowCloudflareResponse(ctx *gin.Context) {
 	// Handle error jika gagal mengupdate data
 	responseData := model.ResponseStatus{
 		Status:  http.StatusAccepted,
-		Message: "Token JWT Generated Succesfully",
+		Message: "Access granted: AccessToken JWT generated successfully",
 		Data: []model.Copyright{
 			{
 				CopyrightAuthorization: token,

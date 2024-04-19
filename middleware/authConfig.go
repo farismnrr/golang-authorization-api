@@ -25,20 +25,31 @@ func AuthorizationConfig() model.AuthorizationKey {
 	return auth
 }
 
-// AuthorizationMiddleware adalah middleware untuk otorisasi menggunakan bearer token
+// AuthorizationMiddleware memeriksa keberadaan dan kevalidan token dalam header Authorization
 func AuthorizationMiddleware(token string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Ambil token dari header Authorization
 		bearerToken := c.GetHeader("Authorization")
 
-		// Periksa apakah token diberikan dan benar
-		if bearerToken == "" || bearerToken != "Bearer "+token {
-			// Jika tidak ada token atau token tidak valid, kirim respons Unauthorized
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"status":  http.StatusUnauthorized,
-				"message": http.StatusText(http.StatusUnauthorized),
-				"token":   token,
-			})
+		// Periksa apakah token diberikan
+		if bearerToken == "" {
+			responseData := model.ResponseStatus{
+				Status:  http.StatusForbidden,
+				Message: "Access denied: private_key is missing! Failed to Generate JWT Token",
+			}
+			c.JSON(http.StatusForbidden, responseData)
+			c.Abort()
+			return
+		}
+
+		// Periksa apakah token valid
+		if bearerToken != "Bearer "+token {
+			// Jika token tidak valid, kirim respons Unauthorized
+			responseData := model.ResponseStatus{
+				Status:  http.StatusUnauthorized,
+				Message: "Access denied: Invalid private_key! Failed to Generate JWT Token",
+			}
+			c.JSON(http.StatusUnauthorized, responseData)
 			c.Abort()
 			return
 		}
