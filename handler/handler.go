@@ -12,7 +12,7 @@ import (
 )
 
 func GetKeyHandler() (*model.ResponseData, error) {
-	_, authToken, err := helper.ReadJsonFile()
+	_, _, authToken, err := helper.ReadJsonFile()
 	if err != nil {
 		fmt.Println("Gagal membaca file JSON:", err)
 	}
@@ -248,7 +248,7 @@ func CopyrightHandler() bool {
 		return false
 	}
 
-	username, _, err := helper.ReadJsonFile()
+	_, username, _, err := helper.ReadJsonFile()
 	if err != nil {
 		fmt.Println("Gagal membaca file JSON:", err)
 		return false
