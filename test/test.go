@@ -15,15 +15,15 @@ func UnitTest() {
 		fmt.Println("Gagal membaca file JSON:", err)
 	}
 
-	if authType != "" {
+	if authType == "" {
 		log.Fatal("Please add type on Authorization file!")
 	}
 
-	if username != "" {
+	if username == "" {
 		log.Fatal("Please add username on Authorization file!")
 	}
 
-	if private_key != "" {
+	if private_key == "" {
 		log.Fatal("Please add private_key on Authorization file!")
 	}
 
