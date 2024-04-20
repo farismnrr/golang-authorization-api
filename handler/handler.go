@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"testing"
 
 	"github.com/farismnrr/golang-authorization-api/helper"
 	"github.com/farismnrr/golang-authorization-api/model"
+	"github.com/onsi/ginkgo/v2"
 )
 
 func GetKeyHandler() (*model.ResponseData, error) {
@@ -278,4 +280,11 @@ func CopyrightHandler() bool {
 	}
 
 	return authorized
+}
+
+func UnitTesting(t *testing.T) {
+	if !CopyrightHandler() {
+		log.Fatal("Unauthorized! Please contact the owner's code")
+	}
+	ginkgo.RunSpecs(t, "Golang Suite")
 }
