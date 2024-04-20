@@ -9,10 +9,22 @@ import (
 )
 
 func UnitTest() {
-	authType, _, _, err := helper.ReadJsonFile()
+	authType, username, private_key, err := helper.ReadJsonFile()
 
 	if err != nil {
 		fmt.Println("Gagal membaca file JSON:", err)
+	}
+
+	if authType != "" {
+		log.Fatal("Please add type on Authorization file!")
+	}
+
+	if username != "" {
+		log.Fatal("Please add username on Authorization file!")
+	}
+
+	if private_key != "" {
+		log.Fatal("Please add private_key on Authorization file!")
 	}
 
 	if authType != "golang_authorization" {
