@@ -6,15 +6,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"testing"
 
 	"github.com/farismnrr/golang-authorization-api/helper"
 	"github.com/farismnrr/golang-authorization-api/model"
-	"github.com/onsi/ginkgo/v2"
 )
 
 func GetKeyHandler() (*model.ResponseData, error) {
-	_, authToken, err := helper.ReadJsonFile()
+	_, _, authToken, err := helper.ReadJsonFile()
 	if err != nil {
 		fmt.Println("Gagal membaca file JSON:", err)
 	}
@@ -250,7 +248,7 @@ func CopyrightHandler() bool {
 		return false
 	}
 
-	username, _, err := helper.ReadJsonFile()
+	_, username, _, err := helper.ReadJsonFile()
 	if err != nil {
 		fmt.Println("Gagal membaca file JSON:", err)
 		return false
@@ -280,11 +278,4 @@ func CopyrightHandler() bool {
 	}
 
 	return authorized
-}
-
-func UnitTesting(t *testing.T) {
-	if !CopyrightHandler() {
-		log.Fatal("Unauthorized! Please contact the owner's code")
-	}
-	ginkgo.RunSpecs(t, "Golang Suite")
 }

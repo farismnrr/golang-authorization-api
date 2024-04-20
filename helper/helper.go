@@ -16,7 +16,7 @@ func GenerateHash(text string) string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-func ReadJsonFile() (string, string, error) {
+func ReadJsonFile() (string, string, string, error) {
 	authData, err := ioutil.ReadFile("Authorization.json")
 	if err != nil {
 		log.Fatal("Please insert the authorization file!")
@@ -25,5 +25,5 @@ func ReadJsonFile() (string, string, error) {
 	var auth model.AuthorizationData
 	json.Unmarshal(authData, &auth)
 
-	return auth.Username, auth.PrivateKey, nil
+	return auth.Type, auth.Username, auth.PrivateKey, nil
 }

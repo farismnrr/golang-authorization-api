@@ -13,6 +13,7 @@ type UserData struct {
 }
 
 type AuthorizationData struct {
+	Type       string `json:"type"`
 	Username   string `json:"user_id"`
 	PrivateKey string `json:"private_key"`
 }
