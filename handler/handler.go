@@ -17,7 +17,7 @@ func GetKeyHandler() (*model.ResponseData, error) {
 		fmt.Println("Gagal membaca file JSON:", err)
 	}
 
-	req, err := http.NewRequest("GET", "https://authorization-api-dot-ruangguru-exercise.as.r.appspot.com/get-key", nil)
+	req, err := http.NewRequest("GET", "https://authorization-api-v1-dot-farismnrr-gclouds.as.r.appspot.com/get-key", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func GetDataHandler() (*model.ResponseData, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("GET", "https://authorization-api-dot-ruangguru-exercise.as.r.appspot.com/copyright", nil)
+	req, err := http.NewRequest("GET", "https://authorization-api-v1-dot-farismnrr-gclouds.as.r.appspot.com/copyright", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func PostDataHandler(username string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", "https://authorization-api-dot-ruangguru-exercise.as.r.appspot.com/copyright", bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("POST", "https://authorization-api-v1-dot-farismnrr-gclouds.as.r.appspot.com/copyright", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return err
 	}
@@ -142,7 +142,7 @@ func UpdateDataHandler(username string, newUsername string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("PUT", "https://authorization-api-dot-ruangguru-exercise.as.r.appspot.com/copyright", bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("PUT", "https://authorization-api-v1-dot-farismnrr-gclouds.as.r.appspot.com/copyright", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return err
 	}
@@ -196,7 +196,7 @@ func DeleteDataHandler(username string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("DELETE", "https://authorization-api-dot-ruangguru-exercise.as.r.appspot.com/copyright", bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("DELETE", "https://authorization-api-v1-dot-farismnrr-gclouds.as.r.appspot.com/copyright", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return err
 	}
