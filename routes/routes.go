@@ -23,9 +23,12 @@ import (
 
 func SetupRoutes(router *gin.Engine, controller *controller.CopyrightController, apiVersion string) {
 	router.GET("/", controller.GetServer)
-	router.GET("/get-key", middleware.AuthorizationMiddleware((middleware.AuthorizationConfig().PrivateKey)), controller.ShowCloudflareResponse)
 
-	apiGroup := router.Group(fmt.Sprintf("/%s", apiVersion))
+	apiGroup := router.Group(fmt.Sprintf("/api/%s", apiVersion))
+	{
+		apiGroup.GET("/get-key", middleware.AuthorizationMiddleware((middleware.AuthorizationConfig().PrivateKey)), controller.ShowCloudflareResponse)
+	}
+
 	copyrightGroup := apiGroup.Group("/copyrights")
 	{
 		copyrightGroup.GET("/", controller.GetCopyright)
