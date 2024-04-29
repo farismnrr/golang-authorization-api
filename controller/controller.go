@@ -24,28 +24,6 @@ import (
 type CopyrightController struct{}
 
 func (c *CopyrightController) GetServer(ctx *gin.Context) {
-	tokenString := ctx.GetHeader("Authorization")
-	if tokenString == "" {
-		responseData := model.ResponseStatus{
-			Status:  http.StatusForbidden,
-			Message: "JWT Token is missing",
-		}
-		ctx.JSON(http.StatusForbidden, responseData)
-		return
-	}
-
-	tokenString = tokenString[7:]
-
-	_, err := middleware.ValidateJWTToken(tokenString)
-	if err != nil {
-		responseData := model.ResponseStatus{
-			Status:  http.StatusUnauthorized,
-			Message: "Invalid token",
-		}
-		ctx.JSON(http.StatusUnauthorized, responseData)
-		return
-	}
-
 	responseStatus := model.ResponseStatus{
 		Status:  http.StatusOK,
 		Message: "Server is running",

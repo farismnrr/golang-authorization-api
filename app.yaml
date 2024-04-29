@@ -1,2 +1,2 @@
 runtime: go122
-service: authorization-api-v1
+service: default

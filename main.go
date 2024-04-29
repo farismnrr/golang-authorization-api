@@ -29,7 +29,7 @@ func main() {
 
 	controller := &controller.CopyrightController{}
 
-	routes.SetupRoutes(router, controller)
+	routes.SetupRoutes(router, controller, "v1")
 
 	port := os.Getenv("PORT")
 	if port == "" {
