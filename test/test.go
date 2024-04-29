@@ -20,7 +20,7 @@ func UnitTest() {
 	}
 
 	if username == "" {
-		log.Fatal("Please add username on Authorization file!")
+		log.Fatal("Please add user_id on Authorization file!")
 	}
 
 	if private_key == "" {
