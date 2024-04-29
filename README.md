@@ -31,12 +31,12 @@ go run main.go
 
 ### Endpoints
 
-- `GET /`: Retrieves server status.
-- `GET /copyright`: Retrieves copyright data.
-- `POST /copyright`: Adds copyright data.
-- `PUT /copyright`: Updates copyright data.
-- `DELETE /copyright`: Removes copyright data.
-- `GET /get-key`: Generates a JWT token for API authorization.
+- `GET /`: Returns server information.
+- `GET /api/{apiVersion}/get-key`: Retrieves the private key for authorization using middleware.
+- `GET /api/{apiVersion}/copyrights`: Retrieves copyright.
+- `POST /api/{apiVersion}/copyrights`: Adds new copyright.
+- `PUT /api/{apiVersion}/copyrights`: Updates existing copyright.
+- `DELETE /api/{apiVersion}/copyrights`: Removes copyright.
 
 ## License
 
