@@ -3,6 +3,7 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ func GetKeyHandler() (*model.ResponseData, error) {
 	_, _, authToken, err := helper.ReadJsonFile()
 	if err != nil {
 		fmt.Println("Gagal membaca file JSON:", err)
+		return nil, err
 	}
 
 	req, err := http.NewRequest("GET", "https://www.farismunir.my.id/api/v1/get-key", nil)
@@ -32,6 +34,12 @@ func GetKeyHandler() (*model.ResponseData, error) {
 	defer resp.Body.Close()
 
 	var response model.ResponseData
+
+	// Check if the response status code indicates invalid token
+	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		return nil, errors.New("invalid private_key")
+	}
+
 	err = json.NewDecoder(resp.Body).Decode(&response)
 	if err != nil {
 		return nil, err
@@ -257,24 +265,20 @@ func CopyrightHandler() bool {
 	hashed := helper.GenerateHash(username)
 
 	authorized := false
+
 	for _, data := range responseAPI.Data {
 		if hashed == data.CopyrightAuthorization {
 			fmt.Println("Status:", responseJWT.Status)
 			fmt.Println(responseJWT.Message)
 			log.Println("Copyright Authorized by", data.Username)
 			authorized = true
-			break
-		} else {
-			fmt.Println("Status: 401")
-			fmt.Println("message:", username, "is not authorized!")
-			return false
+			return true
 		}
 	}
 
 	if !authorized {
-		fmt.Println("Status:", responseAPI.Status)
-		fmt.Println(responseJWT.Message)
-		fmt.Println("Message:", responseAPI.Message)
+		fmt.Println("Status:", http.StatusUnauthorized)
+		fmt.Println("Message:", username, "is not authorized!")
 	}
 
 	return authorized
