@@ -4,11 +4,11 @@ It takes a Gin router and a CopyrightController instance as parameters.
 
 Routes:
 - GET /: Returns server information.
-- GET /get-key: Retrieves the private key for authorization using middleware.
-- GET /{apiVersion}/copyrights: Retrieves copyright.
-- POST /{apiVersion}/copyrights: Adds new copyright.
-- PUT /{apiVersion}/copyrights: Updates existing copyright.
-- DELETE /{apiVersion}/copyrights: Removes copyright.
+- GET /api/{apiVersion}/get-key: Retrieves the private key for authorization using middleware.
+- GET /api/{apiVersion}/copyrights: Retrieves copyright.
+- POST /api/{apiVersion}/copyrights: Adds new copyright.
+- PUT /api/{apiVersion}/copyrights: Updates existing copyright.
+- DELETE /api/{apiVersion}/copyrights: Removes copyright.
 */
 
 package routes
