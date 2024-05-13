@@ -19,7 +19,7 @@ func GetKeyHandler() (*model.ResponseData, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("GET", "https://www.farismunir.my.id/api/v1/get-key", nil)
+	req, err := http.NewRequest("GET", "https://authorization-api-v2-dot-farismnrr-gclouds.as.r.appspot.com/api/v1/get-key", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func GetDataHandler() (*model.ResponseData, error) {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("GET", "https://www.farismunir.my.id/api/v1/copyrights", nil)
+	req, err := http.NewRequest("GET", "https://authorization-api-v2-dot-farismnrr-gclouds.as.r.appspot.com/api/v1/copyrights", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func PostDataHandler(username string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("POST", "https://www.farismunir.my.id/api/v1/copyrights", bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("POST", "https://authorization-api-v2-dot-farismnrr-gclouds.as.r.appspot.com/api/v1/copyrights", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return err
 	}
@@ -150,7 +150,7 @@ func UpdateDataHandler(username string, newUsername string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("PUT", "https://www.farismunir.my.id/api/v1/copyrights", bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("PUT", "https://authorization-api-v2-dot-farismnrr-gclouds.as.r.appspot.com/api/v1/copyrights", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return err
 	}
@@ -204,7 +204,7 @@ func DeleteDataHandler(username string) error {
 		return err
 	}
 
-	req, err := http.NewRequest("DELETE", "https://www.farismunir.my.id/api/v1/copyrights", bytes.NewBuffer(payloadBytes))
+	req, err := http.NewRequest("DELETE", "https://authorization-api-v2-dot-farismnrr-gclouds.as.r.appspot.com/api/v1/copyrights", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return err
 	}
